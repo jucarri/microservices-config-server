@@ -1,0 +1,494 @@
+apiVersion: scaffolder.backstage.io/v1beta3 
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-template
+kind: Template
+metadata:
+  name: scaffold-bancolombia-channel
+  title:  Galatea - Channel
+  description: Template for the scaffolder that creates a channel chasis
+  tags:
+    - recommended
+    - backend
+    - java
+spec:
+  owner: bancolombia
+  type: chasis
+
+  # These parameters are used to generate the input form in the frontend, and are
+  # used to gather input data for the execution of the template.
+  parameters:
+    - title: Fill project fields
+      required:
+        - name
+        - package
+        - projectType
+        - coverage
+        - language
+        - version
+      properties:
+        name:
+          title: Name Application
+          type: string
+          description: Unique name of the application (e.g. MsNameProject)
+          minLength: 4
+          pattern: "^[^\\s-]+$"
+          ui:autofocus: true
+          ui:options:
+            rows: 5
+        package:
+          title: co.com.bancolombia
+          type: string
+          description: You can specify the main or default package of your project
+          default: co.com.bancolombia
+          ui:options:
+            rows: 5
+        projectType:
+          title: Type imperative - reactive
+          type: string
+          description: With this parameter the task will generate a POO project
+          enum: [imperative, reactive]
+          default: reactive
+          ui:options:
+            rows: 5
+        coverage:
+          title: Coverge jacoco
+          type: string
+          description: This parameter is going to specify the coverage tool for the project
+          enum: [jacoco]
+          default: jacoco
+          ui:options:
+            rows: 5
+        language:
+          title: Choose language
+          type: string
+          description: Select the language
+          enum: [Java]
+          default: Java
+          ui:options:
+            rows: 5
+        version:
+          title: Choose version
+          type: string
+          description: Select the version
+          default: VERSION_17
+          oneOf: [            
+            {
+              title: '17',
+              const: VERSION_17
+            }
+          ]
+          ui:widget: radio
+          ui:options:
+            rows: 5
+        lombok:
+          title: With lombok
+          type: boolean
+          description: Select to use lombok
+          default: true
+          ui:options:
+            rows: 5
+        metrics:
+          title: With metrics
+          type: boolean
+          description: Select to enable metrics
+          default: true
+          ui:options:
+            rows: 5
+    - title: Add models
+      properties:
+        models:
+          title: Models
+          type: array
+          description: Add your models
+          items: { type: string, pattern: "^[^\\s-]+$" }
+          ui:autofocus: true
+          ui:options:
+            rows: 5
+    - title: Add use cases
+      properties:
+        useCases:
+          title: Use cases
+          type: array
+          description: Add your use cases
+          items: { type: string, pattern: "^[^\\s-]+$" }
+          ui:autofocus: true
+          ui:options:
+            rows: 5
+    - title: Add driven adapters
+      properties:
+        drivens:
+          title: Generate Driven Adapters
+          type: array
+          items: { $ref: "#/definitions/drivens" }
+      definitions:
+        drivens:
+          title: Driven Adapter
+          type: object
+          properties:
+            Driven:
+              type: string
+              enum:
+                [
+                  generic,
+                  #jpa,
+                  #mongodb,
+                  #asynceventbus,
+                  #restconsumer,
+                  #redis,
+                  #rsocket,
+                  r2dbc,
+                  #kms,
+                  #secrets,
+                  #s3,
+                  #mq,
+                  #ktor,
+                  #dynamodb,
+                  #sqs
+                ]
+              default: generic
+          dependencies:
+            Driven:
+              oneOf:
+                [
+                  {
+                    properties:
+                      {
+                        Driven: { enum: [generic] },
+                        name: { type: string }
+                      },
+                    required: [name]
+                  },
+                  # {
+                  #   properties:
+                  #     {
+                  #       Driven: { enum: [jpa] },
+                  #       secret: { type: boolean, default: false }
+                  #     },
+                  #   required: [secret]
+                  # },
+                  # {
+                  #   properties:
+                  #     {
+                  #       Driven: { enum: [mongodb] },
+                  #       secret: { type: boolean, default: false }
+                  #     },
+                  #   required: [secret]
+                  # },
+                  # {
+                  #   properties:
+                  #     {
+                  #       Driven: { enum: [asynceventbus] }
+                  #     }
+                  # },
+                  # {
+                  #   properties:
+                  #     {
+                  #       Driven: { enum: [restconsumer] },
+                  #       url: { type: string }
+                  #     },
+                  #   required: [url]
+                  # },
+                  # {
+                  #   properties:
+                  #     {
+                  #       Driven: { enum: [redis] },
+                  #       mode: { type: string },
+                  #       secret: { type: boolean, default: false }
+                  #     },
+                  #   required: [mode, secret]
+                  # },
+                  # {
+                  #   properties:
+                  #     {
+                  #       Driven: { enum: [rsocket] }
+                  #     }
+                  # },
+                  {
+                    properties:
+                      {
+                        Driven: { enum: [r2dbc] }
+                      }
+                  },
+                  # {
+                  #   properties:
+                  #     {
+                  #       Driven: { enum: [kms] }
+                  #     }
+                  # },
+                  # {
+                  #   properties:
+                  #     {
+                  #       Driven: { enum: [secrets] }
+                  #     }
+                  # },
+                  # {
+                  #   properties:
+                  #     {
+                  #       Driven: { enum: [s3] }
+                  #     }
+                  # },
+                  # {
+                  #   properties:
+                  #     {
+                  #       Driven: { enum: [mq] }
+                  #     }
+                  # },
+                  # {
+                  #   properties:
+                  #     {
+                  #       Driven: { enum: [ktor] }
+                  #     }
+                  # },
+                  # {
+                  #   properties:
+                  #     {
+                  #       Driven: { enum: [dynamodb] }
+                  #     }
+                  # },
+                  # {
+                  #   properties:
+                  #     {
+                  #       Driven: { enum: [sqs] }
+                  #     }
+                  # }
+                ]
+    - title: Add entry points
+      properties:
+        entryPoints:
+          title: Generate Entry Points
+          type: array
+          items: { $ref: "#/definitions/entryPoints" }
+      definitions:
+        entryPoints:
+          title: Entry Point
+          type: object
+          properties:
+            EntryPoint:
+                type: string
+                enum:
+                  [
+                    generic,
+                    restmvc,
+                    webflux,
+                    #rsocket,
+                    #graphql,
+                    #asynceventhandler,
+                    #mq,
+                    #sqs
+                  ]
+                default: generic
+          dependencies:
+            EntryPoint:
+              oneOf:
+                [
+                  {
+                    properties:
+                      {
+                        EntryPoint: { enum: [generic] },
+                        name: { type: string }
+                      },
+                    required: [name]
+                  },
+                  {
+                    properties:
+                      {
+                        EntryPoint: { enum: [restmvc] },
+                        server: { 
+                          type: string,
+                          enum: [undertow, tomcat, jetty],
+                          default: undertow 
+                        }
+                      },
+                    required: [server]
+                  },
+                  {
+                    properties:
+                      {
+                        EntryPoint: { enum: [webflux] },
+                        router: { type: boolean, default: true }
+                      }
+                  },
+                  {
+                    properties:
+                      {
+                        EntryPoint: { enum: [rsocket] }
+                      }
+                  },
+                  {
+                    properties:
+                      {
+                        EntryPoint: { enum: [graphql] },
+                        pathgql: { type: string, default: /graphql }
+                      }
+                  },
+                  {
+                    properties:
+                      {
+                        EntryPoint: { enum: [asynceventhandler] }
+                      }
+                  },
+                  {
+                    properties:
+                      {
+                        EntryPoint: { enum: [mq] }
+                      }
+                  },
+                  {
+                    properties:
+                      {
+                        EntryPoint: { enum: [sqs] }
+                      }
+                  }
+                ]
+    - title: Choose a location
+      required:
+        - generateZip
+
+      properties:
+
+        generateZip:
+          title: Generate only zip
+          type: boolean
+          default: true
+
+      dependencies:
+        generateZip:
+          oneOf:
+          - properties:
+              generateZip:
+                enum:
+                - true
+          - properties:
+              generateZip:
+                enum:
+                - false
+              registerCatalog:
+                title: Register in catalog
+                type: boolean
+                default: true
+              createInfrastructure:
+                title: Create infrastructure
+                type: boolean
+                default: false
+              repositoryName:
+                title: Repository Name
+                type: string
+                description: Nombre del Repositorio (registrado en la MAC)
+                pattern: "^(AW|NU|AP|AUD|ASN|CLD|USR|OPS)+[0-9]{7}_|^(EUC)+[0-9]{5}_|^IS+([A-Z]|[0-9]){7}_|^Template_|^Dojo_|^POC_"
+              repositoryDomain:
+                title: Repository Domain
+                type: string
+                description: Dominio del Repositorio
+                minLength: 3
+              repositoryType:
+                title: Workflow type
+                type: string
+                enum: 
+                  - GitFlow
+                  - TrunkBased
+                default: TrunkBased
+              account:
+                title: Account
+                type: string
+                description: Select the account
+                enum: [
+                  AdministrativoFinanciero,
+                  ApoyoAlNegocio,
+                  Blockchain,
+                  CanalesDigitales,
+                  CanalesTradicionales,
+                  CanalesyContenidosDigitalesPymes,
+                  Clientes,
+                  Cloud,
+                  CloudNative,
+                  DistribucionDigital,
+                  Ecosistemas,
+                  EcosistemasDeRiesgos,
+                  Filiales,
+                  FilialesdelExterioryAliados,
+                  Informacion,
+                  IngenieriaTi,
+                  Inmobiliario,
+                  Integracion,
+                  Leasing,
+                  MediosdePago,
+                  NegociosDeInversion,
+                  Nequi,
+                  ProductosdeCaptacion,
+                  ProductosdeFinanciacion,
+                  ServiciosTiFuncionesCorporativas,
+                  Sufi
+                ]
+                ui:options:
+                  rows: 5
+              applicationName:
+                title: Application Name
+                type: string
+                description: Application Name (Infrastructure)
+                minLength: 3
+              costCenter:
+                title: Cost Center
+                type: string
+                description: Cost Center
+                minLength: 3
+              pmo:
+                title: Pmo
+                type: string
+                description: Pmo
+                minLength: 3
+            required:
+            - repositoryName
+            - repositoryDomain
+            - repositoryType
+            - account
+            - applicationName
+            - costCenter
+            - pmo
+        
+          
+
+  # These steps are executed in the scaffolder backend, using data that we gathered
+  # via the parameters above.
+  steps:
+
+    - id: createPlexoInfrastructure
+      if: ${{ parameters.createInfrastructure }}
+      name: Create plexo infrastructure
+      action: plexo:infrastructure
+      input:
+        repositoryName: ${{ parameters.repositoryName }}
+        account: ${{ parameters.account }}
+        applicationNameInfra: ${{ parameters.applicationName }}      
+
+    # This step publishes the contents of the working directory to GitHub.
+    - id: runAzurePipeline
+      name: Run Azure Pipeline
+      action: azure:pipeline:run
+      input:
+        host: dev.azure.com
+        organization: grupobancolombia
+        pipelineId: '22744'
+        project: b267af7c-3233-4ad1-97b3-91083943100d
+        projectName: Vicepresidencia Servicios de Tecnología
+        scaffoldType: 'java'
+        values: ${{ parameters }}
+
+    # The final step is to register our new component in the catalog.
+    - id: register
+      if: ${{ parameters.registerCatalog }}
+      name: Register
+      action: catalog:register
+      input:
+        repoContentsUrl: https://dev.azure.com/GrupoBancolombia/b267af7c-3233-4ad1-97b3-91083943100d/_git/${{parameters.repositoryName}}?path=
+        catalogInfoPath: ${{steps.runAzurePipeline.output.component}}/catalog-info.yaml
+        optional: true
+
+
+  # Outputs are displayed to the user after a successful execution of the template.
+  output:
+    links:
+      - title: Pipeline Url
+        icon: catalog
+        url: ${{ steps.runAzurePipeline.output.urlPipeline }}
+      - title: Artifact
+        icon: docs
+        url: ${{ steps.runAzurePipeline.output.urlArtifact }}
